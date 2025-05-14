@@ -5,9 +5,7 @@ import org.example.schedule.dto.ScheduleRequestDto;
 import org.example.schedule.entity.Schedule;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/schedules")
@@ -35,4 +33,19 @@ public class ScheduleController {
     }
 
     //전체 조회 기능
+    @GetMapping
+    public List<ScheduleResponseDto> findAllSchedules() {
+        if (scheduleList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<Schedule> sortedList = new ArrayList<>(scheduleList.values());
+        // 날짜 기준 내림차순 정렬
+        sortedList.sort(Comparator.comparing(Schedule::getDate).reversed());
+
+        List<ScheduleResponseDto> responseList = new ArrayList<>();
+        for (Schedule schedule : sortedList) {
+            responseList.add(new ScheduleResponseDto(schedule));
+        }
+        return responseList;
+    }
 }
