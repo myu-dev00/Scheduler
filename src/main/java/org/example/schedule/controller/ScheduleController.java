@@ -14,7 +14,7 @@ import java.util.Map;
 public class ScheduleController {
 
     private final Map<Long, Schedule> scheduleList = new HashMap<>();
-
+//생성
     @PostMapping
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto dto) {
         Long scheduleId = scheduleList.isEmpty() ? 1 : Collections.max(scheduleList.keySet()) + 1;
@@ -25,4 +25,14 @@ public class ScheduleController {
 
         return new ScheduleResponseDto(schedule);
     }
+
+
+    // 단건 조회 기능
+    @GetMapping("/{id}")
+    public ScheduleResponseDto findScheduleById(@PathVariable Long id) {
+        Schedule schedule = scheduleList.get(id);
+        return new ScheduleResponseDto(schedule);
+    }
+
+    //전체 조회 기능
 }
