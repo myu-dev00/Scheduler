@@ -51,7 +51,7 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         return jdbcTemplate.query(sql, scheduleRowMapperToDto());
     }
 
-    // JDBC쿼리를 Schedule DTO객체로 변환
+    //  ResultSet을 Dto 객체로 Mapping
     private RowMapper<ScheduleResponseDto> scheduleRowMapperToDto() {
         return (rs, rowNum) -> new ScheduleResponseDto(
                 rs.getLong("id"),
@@ -68,7 +68,8 @@ public class JdbcTemplateScheduleRepository implements ScheduleRepository {
         List<Schedule> result = jdbcTemplate.query(sql, scheduleRowMapperToEntity(), id);
         return result.stream().findAny();
     }
-    // JDBC쿼리를 Schedule entity 객체로 변환
+    
+    // ResultSet을 Schedule 객체로 Mapping
     private RowMapper<Schedule> scheduleRowMapperToEntity() {
         return (rs, rowNum) -> {
             Schedule schedule = new Schedule(
