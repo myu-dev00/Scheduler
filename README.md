@@ -104,7 +104,7 @@ schedule/
 │          schedule            │
 ├──────────────────────────────┤
 │ id             BIGINT (PK)   │
-│ contents       VARCHAR(200)  │
+│ contents       VARCHAR(100)  │
 │ username       VARCHAR(100)  │
 │ password        VARCHAR(10)  │
 │ date           VARCHAR(10)   │
