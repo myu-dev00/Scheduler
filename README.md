@@ -70,8 +70,8 @@ schedule/
 | POST   | `/schedules`      | 일정 생성    | JSON Body (`title`, `username`, `password`, `date`) |
 | GET    | `/schedules`      | 전체 조회 | -                                                   |
 | GET    | `/schedules/{id}` | 단건 조회 | PathVariable: `id`                                  |
-| PUT    | `/schedules/{id}` | 일정 수정    | 쿼리파라미터: `title`, `username`                         |
-| DELETE | `/schedules/{id}` | 일정 삭제    | PathVariable: `id`                                  |
+| PUT    | `/schedules/{id}?password={password}` | 일정 수정    | 쿼리파라미터: `title`, `username`                         |
+| DELETE | `/schedules/{id}?password={password}` | 일정 삭제    | PathVariable: `id`                                  |
 
 ### 📤 요청 예시 (POST)
 
