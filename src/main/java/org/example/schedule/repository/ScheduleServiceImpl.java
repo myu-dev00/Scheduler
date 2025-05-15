@@ -11,7 +11,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
-//serviice 구현체
 public class ScheduleServiceImpl {
 
     private final ScheduleRepository scheduleRepository;
@@ -20,40 +19,50 @@ public class ScheduleServiceImpl {
         this.scheduleRepository = scheduleRepository;
     }
 
-    //일정생성
     public ScheduleResponseDto createSchedule(ScheduleRequestDto dto) {
         Schedule schedule = new Schedule(dto.getContents(), dto.getUsername(), dto.getPassword(), dto.getDate());
         return scheduleRepository.createSchedule(schedule);
     }
 
-    //전체조회
     public List<ScheduleResponseDto> findAllSchedules() {
         return scheduleRepository.findAllSchedules();
     }
 
-    //단건 조회
     public ScheduleResponseDto findScheduleById(Long id) {
         return scheduleRepository.findScheduleById(id)
                 .map(ScheduleResponseDto::new)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 ID입니다."));
     }
 
-    //일정 수정
     @Transactional
-    public ScheduleResponseDto updateSchedule(Long id, String title, String username) {
-        int updated = scheduleRepository.updateSchedule(id, title, username);
+    public ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto dto, String password) {
+        Schedule schedule = scheduleRepository.findScheduleById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 ID입니다."));
+
+        if (!schedule.getPassword().equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        }
+
+        int updated = scheduleRepository.updateSchedule(id, dto.getContents(), dto.getUsername());
         if (updated == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "수정된 데이터가 없습니다.");
         }
+
         return findScheduleById(id);
     }
 
-    //일정삭제
     @Transactional
-    public void deleteSchedule(Long id) {
+    public void deleteSchedule(Long id, String password) {
+        Schedule schedule = scheduleRepository.findScheduleById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 일정이 존재하지 않습니다."));
+
+        if (!schedule.getPassword().equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        }
+
         int deleted = scheduleRepository.deleteSchedule(id);
         if (deleted == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "삭제할 데이터가 없습니다.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "삭제 실패");
         }
     }
 }
